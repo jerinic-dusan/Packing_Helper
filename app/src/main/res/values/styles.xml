@@ -12,4 +12,16 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
+    <style name="my_dialog_theme" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>                   <!--header background-->
+        <item name="android:windowBackground">@color/colorBackgroundLight</item>     <!--calendar background-->
+        <item name="android:colorControlActivated">@color/colorPrimary</item> <!--selected day-->
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item> <!--days of the month-->
+        <item name="android:textColorSecondary">@color/colorPrimary</item>    <!--days of the week-->
+    </style>
+
+    <style name="round_button" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
 </resources>

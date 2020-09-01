@@ -1,4 +1,19 @@
 <resources>
-    <string name="app_name">Suitcase</string>
+    <string name="app_name">Suity</string>
     <string name="title_activity_maps">Map</string>
+    <string name="packing_assistant">Packing Assistant</string>
+    <string name="need_our_help">Need our help with packing?</string>
+    <string name="packing_assistant_2">Making the process of packing enjoyable</string>
+    <string name="suitcases">Suitcases</string>
+    <string name="travel_type">Trip Occasion</string>
+    <string name="start_date">Date chooser</string>
+    <string name="end_date">To:</string>
+    <string name="select_date_1">Start date</string>
+    <string name="select_date_2">End date</string>
+    <string name="separator">-</string>
+    <string name="gender">Gender</string>
+    <string name="male">MALE</string>
+    <string name="female">FEMALE</string>
+    <string name="new_suitcase">New Suitcase</string>
+    <string name="where_to">Where do you want to go?</string>
 </resources>
