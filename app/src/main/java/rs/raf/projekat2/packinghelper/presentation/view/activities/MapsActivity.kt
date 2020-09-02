@@ -63,8 +63,8 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+//        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+//        mapFragment.getMapAsync(this)
         init()
     }
 
@@ -215,8 +215,8 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
 
     private fun changeMapLocation(address: Address) {
         location = address
-        mMap.uiSettings.isZoomControlsEnabled = false
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(address.latitude, address.longitude), 5F))
+//        mMap.uiSettings.isZoomControlsEnabled = false
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(address.latitude, address.longitude), 5F))
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

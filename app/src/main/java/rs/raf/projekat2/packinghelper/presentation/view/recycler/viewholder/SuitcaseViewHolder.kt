@@ -1,5 +1,6 @@
 package rs.raf.projekat2.packinghelper.presentation.view.recycler.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
@@ -17,15 +18,12 @@ class SuitcaseViewHolder(override val containerView: View,
         delete_suitcase.setOnClickListener { deleteSuitcase(layoutPosition) }
     }
 
+    @SuppressLint("SetTextI18n")
     fun bind(suitcaseSettings: SuitcaseSettings){
         suitcase_title.text = suitcaseSettings.title
-        when(suitcaseSettings.travelOccasion){
-            "Business" -> { suitcase_image.setImageResource(R.drawable.ic_business) }
-            "Business Casual" -> { suitcase_image.setImageResource(R.drawable.ic_businessman_casual) }
-            "Casual" -> { suitcase_image.setImageResource(R.drawable.ic_casual_man) }
-        }
         location_text.text = suitcaseSettings.location.featureName
         occasion_text.text = suitcaseSettings.travelOccasion
+        if(suitcaseSettings.travelOccasion == "Business Casual"){ occasion_text.text = "Business c..." }
         duration_text.text = suitcaseSettings.days
         temperature_text.text = suitcaseSettings.temperature
     }

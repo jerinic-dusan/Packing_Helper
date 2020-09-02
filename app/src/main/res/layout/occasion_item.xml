@@ -7,16 +7,18 @@
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="10dp"
+    app:strokeColor="@color/colorAccent"
     app:cardElevation="5dp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="@color/colorPrimary"
+
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/round_button"
         android:padding="5dp"
         >
 

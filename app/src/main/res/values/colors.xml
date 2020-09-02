@@ -3,9 +3,17 @@
     <color name="colorPrimary">#bb86fc</color>
     <color name="colorPrimaryDark">#8858c8</color>
     <color name="colorPrimaryLight">#efb7ff</color>
-    <color name="colorBackground">#121212</color>
+
     <color name="colorBackgroundLight">#212121</color>
     <color name="colorTextPrimary">#ffffff</color>
     <color name="colorBackgroundLightOpacity">#F2212121</color>
     <color name="colorGrey">#424242</color>
+
+
+    <color name="colorBackground">#121212</color>
+    <color name="colorCard">#1d1d1d</color>
+    <color name="colorAccent">#03dac6</color>
+    <color name="colorTextHigh">#deffffff</color>
+    <color name="colorTextMedium">#99ffffff</color>
+    <color name="colorTextLow">#61ffffff</color>
 </resources>
