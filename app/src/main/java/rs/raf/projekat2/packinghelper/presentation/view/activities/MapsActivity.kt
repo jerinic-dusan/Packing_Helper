@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -19,20 +20,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.occasion_item.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rs.raf.projekat2.packinghelper.R
-import rs.raf.projekat2.packinghelper.data.models.SuitcaseSettings
+import rs.raf.projekat2.packinghelper.data.models.TripData
 import rs.raf.projekat2.packinghelper.presentation.contract.SuitcaseContract
 import rs.raf.projekat2.packinghelper.presentation.viewmodel.SuitcaseViewModel
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.suitcase_item.view.*
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.adapter.SuitcaseAdapter
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.diff.SuitcaseDiffItemCallback
 import rs.raf.projekat2.packinghelper.presentation.view.states.SuitcaseState
@@ -55,7 +53,10 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     private lateinit var endDate: Date
     private lateinit var gender: String
     private lateinit var occasion: String
-    private var counter = 0
+
+    companion object{
+        const val MESSAGE_KEY_SUITCASE = "suitcase"
+    }
 
     @SuppressLint("SimpleDateFormat")
     private val dateFormatter = SimpleDateFormat("dd MMM yyyy")
@@ -79,7 +80,9 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
         suitcase_recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
         suitcaseAdapter = SuitcaseAdapter(SuitcaseDiffItemCallback(),
             {
-
+                val intent = Intent(this, SuitcaseActivity::class.java)
+                intent.putExtra(MESSAGE_KEY_SUITCASE, it)
+                startActivity(intent)
             },
             {
 
@@ -91,6 +94,7 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
         suitcaseViewModel.suitcaseState.observe(this, Observer {
             renderState(it)
         })
+        suitcaseViewModel.getAll()
     }
 
     private fun renderState(state: SuitcaseState) {
@@ -161,7 +165,7 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     }
 
     private fun initListeners() {
-        place.setOnEditorActionListener { v, actionId, event ->
+        place.setOnEditorActionListener { _, actionId, _ ->
             var handled = false
             if(actionId == EditorInfo.IME_ACTION_DONE){
                 handled = true
@@ -179,9 +183,8 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
         }
         new_suitcase.setOnClickListener {
             if (this::location.isInitialized && this::startDate.isInitialized && this::endDate.isInitialized && this::gender.isInitialized && this::occasion.isInitialized){
-//                Toast.makeText(this, "Location: ${location.featureName}\nStart date: ${startDate.time}\nEnd date: ${endDate.time}\nGender: $gender\nOccasion: $occasion",Toast.LENGTH_LONG).show()
-                suitcaseViewModel.setSuitcaseSettings(SuitcaseSettings(counter, location, startDate, endDate, gender, occasion))
-                counter += 1
+                val ss = TripData(location, startDate, endDate, gender, occasion, resources.getString(R.string.forecast_api_key))
+                suitcaseViewModel.create(ss)
             }else{
                 if (!this::location.isInitialized){
                     Toast.makeText(this, "Please specify travel destination.", Toast.LENGTH_SHORT).show()
@@ -202,11 +205,17 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     private fun searchLocation(location: String) {
          val addressList: List<Address>
         if (location != ""){
-            addressList = Geocoder(this).getFromLocationName(location, 1)
-            if (addressList.isNotEmpty()){
-                changeMapLocation(addressList[0])
-            }else{
-                Toast.makeText(this, "No such location found...", Toast.LENGTH_LONG).show()
+            try {
+                addressList = Geocoder(this).getFromLocationName(location, 1)
+                if (addressList.isNotEmpty()){
+                    changeMapLocation(addressList[0])
+                }else{
+                    Toast.makeText(this, "No such location found...", Toast.LENGTH_LONG).show()
+                }
+            }
+            catch (e: Exception){
+                Toast.makeText(this, "Please connect to internet to find the desired location.", Toast.LENGTH_LONG).show()
+                return
             }
         }else{
             Toast.makeText(this, "No such location found...", Toast.LENGTH_LONG).show()
@@ -226,10 +235,10 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     }
 
     fun fromDate(view: View) {
-        DatePickerDialog(
+        val newDate = Calendar.getInstance()
+        val dpd = DatePickerDialog(
             this, R.style.my_dialog_theme,
             OnDateSetListener { _, year, month, dayOfMonth ->
-                val newDate = Calendar.getInstance()
                 newDate.set(year, month, dayOfMonth)
                 from_date.text = dateFormatter.format(newDate.time)
                 startDate = newDate.time
@@ -237,14 +246,17 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
             calendar[Calendar.DAY_OF_MONTH]
-        ).show()
+        )
+        dpd.datePicker.minDate = newDate.timeInMillis
+        dpd.datePicker.maxDate = newDate.timeInMillis + (1000*60*60*24*15)
+        dpd.show()
     }
 
     fun toDate(view: View) {
-        DatePickerDialog(
+        val newDate = Calendar.getInstance()
+        val dpd = DatePickerDialog(
             this, R.style.my_dialog_theme,
             OnDateSetListener { _, year, month, dayOfMonth ->
-                val newDate = Calendar.getInstance()
                 newDate.set(year, month, dayOfMonth)
                 to_date.text = dateFormatter.format(newDate.time)
                 endDate = newDate.time
@@ -252,7 +264,10 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
             calendar[Calendar.DAY_OF_MONTH]
-        ).show()
+        )
+        dpd.datePicker.minDate = newDate.timeInMillis
+        dpd.datePicker.maxDate = newDate.timeInMillis + (1000*60*60*24*15)
+        dpd.show()
     }
 
     private fun View.hideKeyboard() {

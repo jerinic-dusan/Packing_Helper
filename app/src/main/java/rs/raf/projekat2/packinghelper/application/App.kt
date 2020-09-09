@@ -32,6 +32,7 @@ class App : Application() {
 
     private fun initKoin() {
         val modules = listOf(
+            coreModule,
             suitcaseModule
         )
         startKoin {

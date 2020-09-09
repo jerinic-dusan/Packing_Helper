@@ -1,0 +1,14 @@
+package rs.raf.projekat2.packinghelper.data.repositories
+
+import io.reactivex.Completable
+import io.reactivex.Observable
+import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
+import rs.raf.projekat2.packinghelper.data.models.TripData
+
+interface SuitcaseRepository {
+
+
+    fun create(data: TripData): Completable
+    fun getAll(): Observable<List<SuitcaseWithItems>>
+
+}
