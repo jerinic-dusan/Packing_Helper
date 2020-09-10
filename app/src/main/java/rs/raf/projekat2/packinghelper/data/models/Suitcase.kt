@@ -12,7 +12,7 @@ import java.util.*
 data class Suitcase(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-    val name: String,
+    var name: String,
     val desc: String,
     val location: String,
     val lat: Double,

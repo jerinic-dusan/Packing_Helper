@@ -15,6 +15,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,6 +32,9 @@ import rs.raf.projekat2.packinghelper.presentation.contract.SuitcaseContract
 import rs.raf.projekat2.packinghelper.presentation.viewmodel.SuitcaseViewModel
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.android.synthetic.main.activity_suitcase.*
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.adapter.SuitcaseAdapter
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.diff.SuitcaseDiffItemCallback
 import rs.raf.projekat2.packinghelper.presentation.view.states.SuitcaseState
@@ -64,8 +68,6 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-//        mapFragment.getMapAsync(this)
         init()
     }
 
@@ -85,7 +87,12 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
                 startActivity(intent)
             },
             {
+                suitcaseViewModel.delete(it)
 
+                val layoutManager = suitcase_recycler.layoutManager as LinearLayoutManager
+                if(layoutManager.isViewPartiallyVisible(layoutManager.getChildAt(2)!!, true, false) && !new_suitcase.isShown){
+                    new_suitcase.show(true)
+                }
             })
         suitcase_recycler.adapter = suitcaseAdapter
     }
@@ -200,6 +207,17 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
 
             }
         }
+        suitcase_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if(dx > 0){
+                    new_suitcase.hide(true)
+                }else if(dx < 0){
+                    new_suitcase.show(true)
+                }
+            }
+        })
     }
 
     private fun searchLocation(location: String) {
@@ -270,7 +288,7 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
         dpd.show()
     }
 
-    private fun View.hideKeyboard() {
+    fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }

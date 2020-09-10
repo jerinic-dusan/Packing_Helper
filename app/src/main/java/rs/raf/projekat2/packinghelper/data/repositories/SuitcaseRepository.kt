@@ -9,6 +9,8 @@ interface SuitcaseRepository {
 
 
     fun create(data: TripData): Completable
+    fun update(suitcaseWithItems: SuitcaseWithItems): Completable
+    fun delete(suitcaseWithItems: SuitcaseWithItems): Completable
     fun getAll(): Observable<List<SuitcaseWithItems>>
 
 }

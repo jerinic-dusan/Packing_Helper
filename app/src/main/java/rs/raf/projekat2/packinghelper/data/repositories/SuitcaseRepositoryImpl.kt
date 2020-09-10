@@ -46,5 +46,15 @@ class SuitcaseRepositoryImpl(private val localDataSource: SuitcaseDao, private v
         }
     }
 
+    override fun delete(suitcaseWithItems: SuitcaseWithItems): Completable {
+        return Completable.fromCallable {
+            localDataSource.delete(suitcaseWithItems.suitcase, suitcaseWithItems.suitcaseItems).blockingAwait()
+        }
+    }
 
+    override fun update(suitcaseWithItems: SuitcaseWithItems): Completable {
+        return Completable.fromCallable {
+            localDataSource.update(suitcaseWithItems)
+        }
+    }
 }

@@ -15,6 +15,12 @@ abstract class SuitcaseDao{
     @Query("SELECT * FROM suitcases")
     abstract fun getSuitcaseWithItems(): Observable<List<SuitcaseWithItems>>
 
+    @Update
+    abstract fun updateSuitcase(suitcase: Suitcase): Completable
+
+    @Query("DELETE FROM suitcase_items WHERE suitcase_id == :id")
+    abstract fun deleteById(id: Long): Completable
+
     @Transaction
     @Delete
     abstract fun delete(suitcase: Suitcase, suitcaseItems: List<SuitcaseItem>): Completable
@@ -30,6 +36,14 @@ abstract class SuitcaseDao{
         val id = insertSuitcase(suitcaseWithItems.suitcase).blockingGet()
         suitcaseWithItems.suitcaseItems.forEach { it.suitcaseId = id }
         insertItems(suitcaseWithItems.suitcaseItems).blockingAwait()
+    }
+
+    @Transaction
+    open fun update(suitcaseWithItems: SuitcaseWithItems){
+        updateSuitcase(suitcaseWithItems.suitcase).blockingAwait()
+        deleteById(suitcaseWithItems.suitcase.id).blockingAwait()
+        insertItems(suitcaseWithItems.suitcaseItems).blockingAwait()
+        getSuitcaseWithItems()
     }
 
 }

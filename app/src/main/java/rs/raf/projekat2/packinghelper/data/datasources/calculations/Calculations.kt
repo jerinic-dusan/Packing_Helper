@@ -23,7 +23,10 @@ class Calculations: CalculationInterface {
                 fd.rain,
                 fd.snow
             ),
-            listOf()
+            listOf(
+                SuitcaseItem(0,0,"Test1", "Tops", 1),
+                SuitcaseItem(1,0,"Test2", "Bottoms", 1)
+            )
         )
     }
 

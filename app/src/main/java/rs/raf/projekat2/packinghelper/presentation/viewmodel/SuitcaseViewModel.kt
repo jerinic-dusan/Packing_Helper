@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
 import rs.raf.projekat2.packinghelper.data.models.TripData
 import rs.raf.projekat2.packinghelper.data.repositories.SuitcaseRepository
 import rs.raf.projekat2.packinghelper.presentation.contract.SuitcaseContract
@@ -38,7 +39,37 @@ class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): Vie
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    Timber.e("Created new suitcase")
+                },
+                {
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
 
+    override fun delete(suitcaseWithItems: SuitcaseWithItems) {
+        val subscription = suitcaseRepository.delete(suitcaseWithItems)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Timber.e("Deleted $suitcaseWithItems")
+                },
+                {
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun update(suitcaseWithItems: SuitcaseWithItems) {
+        val subscription = suitcaseRepository.update(suitcaseWithItems)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Timber.e("Updated $suitcaseWithItems")
                 },
                 {
                     Timber.e(it)
