@@ -6,6 +6,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class SuitcaseGroup(
     val id: Int,
-    val name: String,
-    val items: List<SuitcaseItem>
+    var name: String,
+    var items: MutableList<SuitcaseItem>
 ): Parcelable

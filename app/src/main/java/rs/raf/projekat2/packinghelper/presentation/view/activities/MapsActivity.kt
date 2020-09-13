@@ -15,9 +15,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -29,15 +31,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import rs.raf.projekat2.packinghelper.R
 import rs.raf.projekat2.packinghelper.data.models.TripData
 import rs.raf.projekat2.packinghelper.presentation.contract.SuitcaseContract
-import rs.raf.projekat2.packinghelper.presentation.viewmodel.SuitcaseViewModel
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import kotlinx.android.synthetic.main.activity_suitcase.*
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.adapter.SuitcaseAdapter
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.diff.SuitcaseDiffItemCallback
 import rs.raf.projekat2.packinghelper.presentation.view.states.SuitcaseState
+import rs.raf.projekat2.packinghelper.presentation.viewmodel.SuitcaseViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.schedule
@@ -58,6 +55,10 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     private lateinit var gender: String
     private lateinit var occasion: String
 
+    private var forecastCounter = 0
+    private val midnight = Calendar.getInstance()
+
+
     companion object{
         const val MESSAGE_KEY_SUITCASE = "suitcase"
     }
@@ -76,6 +77,13 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
         initListeners()
         initFields()
         initObservers()
+        initMidnight()
+    }
+
+    private fun initMidnight() {
+        midnight.set(Calendar.HOUR_OF_DAY, 23)
+        midnight.set(Calendar.MINUTE, 59)
+        midnight.set(Calendar.SECOND, 59)
     }
 
     private fun initRecycler() {
@@ -90,8 +98,10 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
                 suitcaseViewModel.delete(it)
 
                 val layoutManager = suitcase_recycler.layoutManager as LinearLayoutManager
-                if(layoutManager.isViewPartiallyVisible(layoutManager.getChildAt(2)!!, true, false) && !new_suitcase.isShown){
-                    new_suitcase.show(true)
+                layoutManager.getChildAt(1)?.let {
+                    if(layoutManager.isViewPartiallyVisible(layoutManager.getChildAt(1)!!, true, false) && !new_suitcase.isShown){
+                        new_suitcase.show(true)
+                    }
                 }
             })
         suitcase_recycler.adapter = suitcaseAdapter
@@ -122,7 +132,7 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     private fun initFields() {
         Timer("SettingUp", false).schedule(2000) { changeTitle() }
 
-        for (i in 0..2){
+        for (i in 0..3){
             val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val rowView: View = inflater.inflate(R.layout.occasion_item, null)
             parent_linear_layout!!.addView(rowView, parent_linear_layout!!.childCount)
@@ -152,6 +162,10 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
                 2 -> {
                     rowView.type.text = "Casual"
                     rowView.image.setImageResource(R.drawable.ic_casual_man)
+                }
+                3 -> {
+                    rowView.type.text = "Custom"
+                    rowView.image.setImageResource(R.drawable.ic_business)
                 }
             }
         }
@@ -191,7 +205,16 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
         new_suitcase.setOnClickListener {
             if (this::location.isInitialized && this::startDate.isInitialized && this::endDate.isInitialized && this::gender.isInitialized && this::occasion.isInitialized){
                 val ss = TripData(location, startDate, endDate, gender, occasion, resources.getString(R.string.forecast_api_key))
-                suitcaseViewModel.create(ss)
+
+                val now = Calendar.getInstance()
+                if(now.time > midnight.time){ forecastCounter = 0 }
+
+                if(forecastCounter < 500){
+                    suitcaseViewModel.create(ss, this)
+                    forecastCounter += 1
+                }else{
+                    Toast.makeText(this, "You used all weather forecast calls. Please wait until tomorrow to use more.", Toast.LENGTH_LONG).show()
+                }
             }else{
                 if (!this::location.isInitialized){
                     Toast.makeText(this, "Please specify travel destination.", Toast.LENGTH_SHORT).show()

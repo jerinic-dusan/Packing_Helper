@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 data class SuitcaseItem(
     @PrimaryKey(autoGenerate = true) val id: Long,
     @ColumnInfo(name = "suitcase_id") var suitcaseId: Long,
-    val name: String,
-    val group: String,
-    val amount: Int
+    var name: String,
+    var group: String,
+    var amount: Int
 ): Parcelable

@@ -11,7 +11,8 @@ class SuitcaseGroupDiffItemCallback: DiffUtil.ItemCallback<SuitcaseGroup>() {
     }
 
     override fun areContentsTheSame(oldItem: SuitcaseGroup, newItem: SuitcaseGroup): Boolean {
-        return oldItem.name == newItem.name &&
+        return oldItem.id == newItem.id &&
+                oldItem.name == newItem.name &&
                 oldItem.items == newItem.items
     }
 

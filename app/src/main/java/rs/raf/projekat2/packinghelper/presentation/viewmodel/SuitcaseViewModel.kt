@@ -1,5 +1,7 @@
 package rs.raf.projekat2.packinghelper.presentation.viewmodel
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,7 +35,7 @@ class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): Vie
         subscriptions.add(subscription)
     }
 
-    override fun create(data: TripData) {
+    override fun create(data: TripData, context: Context) {
         val subscription = suitcaseRepository.create(data)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -42,7 +44,7 @@ class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): Vie
                     Timber.e("Created new suitcase")
                 },
                 {
-                    Timber.e(it)
+                    Toast.makeText(context, "Please connect to internet to use weather forecast functionality.", Toast.LENGTH_LONG).show()
                 }
             )
         subscriptions.add(subscription)

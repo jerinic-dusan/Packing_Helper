@@ -1,25 +1,21 @@
 package rs.raf.projekat2.packinghelper.presentation.view.activities
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.view.children
-import androidx.core.view.forEach
-import androidx.core.view.forEachIndexed
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_suitcase.*
-import kotlinx.android.synthetic.main.suitcase_group.view.*
-import kotlinx.android.synthetic.main.suitcase_group_item.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rs.raf.projekat2.packinghelper.R
-import rs.raf.projekat2.packinghelper.data.models.Suitcase
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseGroup
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseItem
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
@@ -27,7 +23,6 @@ import rs.raf.projekat2.packinghelper.presentation.contract.SuitcaseContract
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.adapter.SuitcaseGroupAdapter
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.diff.SuitcaseGroupDiffItemCallback
 import rs.raf.projekat2.packinghelper.presentation.viewmodel.SuitcaseViewModel
-import timber.log.Timber
 
 class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapReadyCallback {
 
@@ -61,18 +56,24 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
                 suitcaseGroupAdapter.submitList(suitcaseGroups.toList())
 
                 val layoutManager = recycler.layoutManager as StaggeredGridLayoutManager
-                if(layoutManager.isViewPartiallyVisible(layoutManager.getChildAt(2)!!, true, false) && !cancel_edit.isShown && !save_edit.isShown){
-                    save_edit.show(false)
-                    cancel_edit.show(true)
+                layoutManager.getChildAt(2)?.let {
+                    if(layoutManager.isViewPartiallyVisible(layoutManager.getChildAt(2)!!, true, false) && !cancel_edit.isShown && !save_edit.isShown){
+                        save_edit.show(false)
+                        cancel_edit.show(true)
+                    }
                 }
             },
             {
                 //ADD GROUP
-                suitcaseGroups.remove(it)
-                suitcaseGroups.add(SuitcaseGroup(counter, "Name", listOf()))
+                suitcaseGroups.add(suitcaseGroups.size - 1, SuitcaseGroup(counter, "Name", mutableListOf()))
                 counter += 1
-                suitcaseGroups.add(it)
                 suitcaseGroupAdapter.submitList(suitcaseGroups.toList())
+            },
+            {
+                //EDIT GROUPS
+                val index = suitcaseGroups.indexOf(suitcaseGroups.find { sg -> sg.id == it.id })
+                suitcaseGroups.removeAt(index)
+                suitcaseGroups.add(index, it)
             }
         )
         recycler.adapter = suitcaseGroupAdapter
@@ -82,23 +83,14 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
         cancel_edit.setOnClickListener { finish() }
         save_edit.setOnClickListener {
             val items = mutableListOf<SuitcaseItem>()
-            recycler.children.forEachIndexed groups@{ index, view ->
-                if(index == recycler.childCount - 1){ return@groups }
-                view.suitcase_group_items.forEachIndexed items@{ i, v ->
-                    if(i == view.suitcase_group_items.childCount - 1){ return@items }
-                    if(v.group_item.text.isNotEmpty() && v.group_item_amount.text.isNotEmpty()){
-                        items.add(
-                            SuitcaseItem(
-                                0,
-                                suitcaseWithItems.suitcase.id,
-                                v.group_item.text.toString().trim(),
-                                view.group_name.text.toString(),
-                                v.group_item_amount.text.toString().toInt()
-                            )
-                        )
-                    }
+
+            suitcaseGroups.forEachIndexed{ index, group ->
+                if(index == suitcaseGroups.size - 1){ return@forEachIndexed }
+                group.items.forEach { item ->
+                    items.add(SuitcaseItem(0, suitcaseWithItems.suitcase.id, item.name, item.group, item.amount))
                 }
             }
+
             suitcaseWithItems.suitcase.name = suitcase_title.text.toString().trim()
             suitcaseViewModel.update(SuitcaseWithItems(suitcaseWithItems.suitcase, items.toList()))
             finish()
@@ -143,8 +135,7 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
             suitcaseGroups.add(SuitcaseGroup(counter, group, items))
             counter += 1
         }
-        suitcaseGroups.add(SuitcaseGroup(-1, "Add", listOf()))
-        Timber.e("$suitcaseGroups")
+        suitcaseGroups.add(SuitcaseGroup(-1, "Add", mutableListOf()))
         suitcaseGroupAdapter.submitList(suitcaseGroups.toList())
     }
 
