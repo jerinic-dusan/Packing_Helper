@@ -20,4 +20,10 @@
         <item name="android:textColorSecondary">@color/colorPrimary</item>    <!--days of the week-->
     </style>
 
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/colorTextHigh</item>
+        <item name="android:windowBackground">@drawable/round_text_view</item>
+    </style>
+
 </resources>

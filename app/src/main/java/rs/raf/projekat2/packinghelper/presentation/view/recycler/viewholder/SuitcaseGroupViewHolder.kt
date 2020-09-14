@@ -13,6 +13,7 @@ import android.widget.TextView.OnEditorActionListener
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.activity_suitcase.*
 import kotlinx.android.synthetic.main.suitcase_group.*
 import kotlinx.android.synthetic.main.suitcase_group.view.*
 import kotlinx.android.synthetic.main.suitcase_group_item.view.*
@@ -38,6 +39,7 @@ class SuitcaseGroupViewHolder(override val containerView: View,
         }
 
         edit_suitcase_group.setOnClickListener {
+            containerView.clearFocus()
             editGroup(layoutPosition)
         }
     }
@@ -119,7 +121,7 @@ class SuitcaseGroupViewHolder(override val containerView: View,
                         suitcaseGroup.items[index].amount = editText.text.toString().trim().toInt()
                     }
                 }
-                editText.clearFocus()
+                if(editText.text.toString() == ""){ return@OnEditorActionListener false}
                 edit_suitcase_group.callOnClick()
                 return@OnEditorActionListener true
             }
@@ -148,7 +150,7 @@ class SuitcaseGroupViewHolder(override val containerView: View,
                         suitcaseGroup.items[index].amount = editText.text.toString().trim().toInt()
                     }
                 }
-                editText.clearFocus()
+                if(editText.text.toString() == ""){ return@OnEditorActionListener }
                 edit_suitcase_group.callOnClick()
             }
         }

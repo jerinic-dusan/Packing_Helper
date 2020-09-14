@@ -1,6 +1,7 @@
 package rs.raf.projekat2.packinghelper.presentation.view.activities
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,7 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
     private var counter = 0
     private val suitcaseGroups = mutableListOf<SuitcaseGroup>()
     private val suitcaseViewModel: SuitcaseContract.ViewModel by viewModel<SuitcaseViewModel>()
+    private var hasChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,13 +76,24 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
                 val index = suitcaseGroups.indexOf(suitcaseGroups.find { sg -> sg.id == it.id })
                 suitcaseGroups.removeAt(index)
                 suitcaseGroups.add(index, it)
+                hasChanged = true
             }
         )
         recycler.adapter = suitcaseGroupAdapter
     }
 
     private fun initListeners() {
-        cancel_edit.setOnClickListener { finish() }
+        cancel_edit.setOnClickListener {
+            if(hasChanged){
+                val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+                builder.setTitle("Exit warning!").setMessage("Exiting this screen without saving will result in a loss of new data.")
+                    .setCancelable(false).setIcon(R.drawable.warning).setPositiveButton("Exit"){_, _ -> finish()}.setNegativeButton("Cancel"){dialog, _ -> dialog.cancel()}
+                val dialog: AlertDialog? = builder.create()
+                dialog!!.show()
+            }else{
+                finish()
+            }
+        }
         save_edit.setOnClickListener {
             val items = mutableListOf<SuitcaseItem>()
 
@@ -108,6 +121,19 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
                 }
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if(hasChanged){
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            builder.setTitle("Exit warning!").setMessage("Exiting this screen without saving will result in a loss of new data.")
+                .setCancelable(false).setIcon(R.drawable.warning).setPositiveButton("Exit"){_, _ -> finish()}.setNegativeButton("Cancel"){dialog, _ -> dialog.cancel()}
+            val dialog: AlertDialog? = builder.create()
+            dialog!!.show()
+        }else{
+            super.onBackPressed()
+        }
+
     }
 
     @SuppressLint("SetTextI18n")

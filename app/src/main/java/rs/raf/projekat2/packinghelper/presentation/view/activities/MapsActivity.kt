@@ -1,6 +1,7 @@
 package rs.raf.projekat2.packinghelper.presentation.view.activities
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
@@ -57,6 +58,8 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
 
     private var forecastCounter = 0
     private val midnight = Calendar.getInstance()
+
+    private lateinit var suitcaseHistory: TripData
 
 
     companion object{
@@ -210,8 +213,17 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
                 if(now.time > midnight.time){ forecastCounter = 0 }
 
                 if(forecastCounter < 500){
-                    suitcaseViewModel.create(ss, this)
-                    forecastCounter += 1
+                    if(this::suitcaseHistory.isInitialized){
+                        if(suitcaseHistory.location == ss.location && suitcaseHistory.startDate == ss.startDate && suitcaseHistory.endDate == ss.endDate && suitcaseHistory.gender == ss.gender && suitcaseHistory.travelOccasion == ss.travelOccasion){
+                            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+                            builder.setTitle("Exit warning!").setMessage("You already created a suitcase for this trip. Are you sure you want to create another one?")
+                                .setCancelable(false).setIcon(R.drawable.warning).setPositiveButton("Create"){_, _ -> createSuitcase(ss)}.setNegativeButton("Cancel"){dialog, _ -> dialog.cancel()}
+                            val dialog: AlertDialog? = builder.create()
+                            dialog!!.show()
+                        }
+                    }else{
+                        createSuitcase(ss)
+                    }
                 }else{
                     Toast.makeText(this, "You used all weather forecast calls. Please wait until tomorrow to use more.", Toast.LENGTH_LONG).show()
                 }
@@ -241,6 +253,12 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
                 }
             }
         })
+    }
+
+    private fun createSuitcase(ss: TripData) {
+        suitcaseViewModel.create(ss, this)
+        forecastCounter += 1
+        suitcaseHistory = ss
     }
 
     private fun searchLocation(location: String) {
