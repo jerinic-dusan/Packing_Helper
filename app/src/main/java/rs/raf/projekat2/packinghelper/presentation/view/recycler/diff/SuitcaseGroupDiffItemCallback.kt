@@ -2,7 +2,6 @@ package rs.raf.projekat2.packinghelper.presentation.view.recycler.diff
 
 import androidx.recyclerview.widget.DiffUtil
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseGroup
-import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
 
 class SuitcaseGroupDiffItemCallback: DiffUtil.ItemCallback<SuitcaseGroup>() {
 

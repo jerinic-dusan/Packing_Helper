@@ -1,19 +1,15 @@
 package rs.raf.projekat2.packinghelper.presentation.view.recycler.viewholder
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView.OnEditorActionListener
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.activity_suitcase.*
 import kotlinx.android.synthetic.main.suitcase_group.*
 import kotlinx.android.synthetic.main.suitcase_group.view.*
 import kotlinx.android.synthetic.main.suitcase_group_item.view.*
@@ -21,7 +17,6 @@ import kotlinx.android.synthetic.main.suitcase_group_item_separator.view.*
 import rs.raf.projekat2.packinghelper.R
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseGroup
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseItem
-import timber.log.Timber
 
 
 class SuitcaseGroupViewHolder(override val containerView: View,

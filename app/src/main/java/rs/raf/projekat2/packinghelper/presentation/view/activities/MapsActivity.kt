@@ -256,7 +256,8 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     }
 
     private fun createSuitcase(ss: TripData) {
-        suitcaseViewModel.create(ss, this)
+        //THIS IS NOT RECOMMENDED
+        suitcaseViewModel.getForecast(ss, this)
         forecastCounter += 1
         suitcaseHistory = ss
     }

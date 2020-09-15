@@ -1,12 +1,15 @@
 package rs.raf.projekat2.packinghelper.presentation.viewmodel
 
+import android.app.Application
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import rs.raf.projekat2.packinghelper.data.models.ForecastResponse
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
 import rs.raf.projekat2.packinghelper.data.models.TripData
 import rs.raf.projekat2.packinghelper.data.repositories.SuitcaseRepository
@@ -17,7 +20,6 @@ import timber.log.Timber
 class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): ViewModel(), SuitcaseContract.ViewModel {
 
     override val suitcaseState: MutableLiveData<SuitcaseState> = MutableLiveData()
-    private val list = mutableListOf<TripData>()
     private val subscriptions = CompositeDisposable()
 
     override fun getAll() {
@@ -35,16 +37,48 @@ class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): Vie
         subscriptions.add(subscription)
     }
 
-    override fun create(data: TripData, context: Context) {
-        val subscription = suitcaseRepository.create(data)
+    override fun getForecast(data: TripData, context: Context) {
+        val subscription = suitcaseRepository.getForecast(data)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    Timber.e("Created new suitcase")
+                    calculations(it, context)
+                    Toast.makeText(context, "Fetched weather forecast.", Toast.LENGTH_SHORT).show()
                 },
                 {
                     Toast.makeText(context, "Please connect to internet to use weather forecast functionality.", Toast.LENGTH_LONG).show()
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun calculations(forecastResponse: ForecastResponse, context: Context) {
+        val subscription = suitcaseRepository.calculations(forecastResponse)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    insert(it, context)
+                    Toast.makeText(context, "Calculated suitcase items.", Toast.LENGTH_SHORT).show()
+                },
+                {
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun insert(suitcaseWithItems: SuitcaseWithItems, context: Context) {
+        val subscription = suitcaseRepository.create(suitcaseWithItems)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Toast.makeText(context, "Created new suitcase.", Toast.LENGTH_SHORT).show()
+                },
+                {
+                    Timber.e(it)
                 }
             )
         subscriptions.add(subscription)

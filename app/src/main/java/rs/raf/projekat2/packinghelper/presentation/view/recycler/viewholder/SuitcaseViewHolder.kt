@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.suitcase_item.*
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
-import rs.raf.projekat2.packinghelper.data.models.TripData
 
 class SuitcaseViewHolder(override val containerView: View,
                         editSuitcase: (Int) -> Unit,

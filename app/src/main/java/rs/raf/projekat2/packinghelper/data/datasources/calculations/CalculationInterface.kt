@@ -1,5 +1,6 @@
 package rs.raf.projekat2.packinghelper.data.datasources.calculations
 
+import io.reactivex.Observable
 import rs.raf.projekat2.packinghelper.data.models.ForecastData
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
 import rs.raf.projekat2.packinghelper.data.models.TripData

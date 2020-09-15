@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import rs.raf.projekat2.packinghelper.R
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
-import rs.raf.projekat2.packinghelper.data.models.TripData
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.diff.SuitcaseDiffItemCallback
 import rs.raf.projekat2.packinghelper.presentation.view.recycler.viewholder.SuitcaseViewHolder
 

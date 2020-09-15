@@ -1,6 +1,5 @@
 package rs.raf.projekat2.packinghelper.modules
 
-import androidx.room.Database
 import androidx.room.Room
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.squareup.moshi.Moshi

@@ -1,5 +1,6 @@
 package rs.raf.projekat2.packinghelper.modules
 
+import android.app.Application
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import rs.raf.projekat2.packinghelper.data.datasources.calculations.CalculationInterface

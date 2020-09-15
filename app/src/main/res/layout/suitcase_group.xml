@@ -81,6 +81,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/colorBackgroundLight"
         android:src="@drawable/plus"
-        />
+        android:contentDescription="@string/icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

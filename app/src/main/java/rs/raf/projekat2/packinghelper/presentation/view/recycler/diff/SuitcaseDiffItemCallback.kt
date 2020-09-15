@@ -3,7 +3,6 @@ package rs.raf.projekat2.packinghelper.presentation.view.recycler.diff
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 import rs.raf.projekat2.packinghelper.data.models.SuitcaseWithItems
-import rs.raf.projekat2.packinghelper.data.models.TripData
 
 class SuitcaseDiffItemCallback: DiffUtil.ItemCallback<SuitcaseWithItems>(){
 
