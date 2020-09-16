@@ -20,10 +20,10 @@ class Calculations: CalculationInterface {
                 if (td.travelOccasion == "Custom"){ return SuitcaseWithItems(suitcase, listOf())  }
                 if (td.travelOccasion == "Business" || td.travelOccasion == "Business Casual"){
                     val items = mutableListOf(
-                        calculateSlacks(suitcase.days, MALE, BUSINESS), calculateJeansOrShorts(suitcase.days, fd.temp), calculateDressShirts(suitcase.days, MALE),
+                        calculateSlacks(suitcase.days, MALE, BUSINESS), calculateJeansOrShorts(suitcase.days, fd.temp, BUSINESS), calculateDressShirts(suitcase.days, MALE),
                         calculateDressShoes(suitcase.days, MALE), calculateUndershirts(suitcase.days), calculateUnderwear(suitcase.days),
                         calculateSocks(suitcase.days), calculateBelts(suitcase.days, MALE, BUSINESS), calculatePocketSquares(suitcase.days),
-                        calculateSweaters(suitcase.days), calculateTshirts(suitcase.days),
+                        calculateSweaters(suitcase.days), calculateTshirts(suitcase.days, BUSINESS),
                         calculateJewelry(MALE), calculateUmbrella(fd.rain), calculatePajamas(suitcase.days), calculateCasualShoe(suitcase.days, fd.temp, MALE)
                     )
                     when(td.travelOccasion){
@@ -46,9 +46,9 @@ class Calculations: CalculationInterface {
                 }
                 if (td.travelOccasion == "Casual"){
                     val items = mutableListOf(
-                        calculateJackets(fd.temp, CASUAL), calculateHoodie(suitcase.days, MALE, fd.temp), calculateJeansOrShorts(suitcase.days, fd.temp),
+                        calculateJackets(fd.temp, CASUAL), calculateHoodie(suitcase.days, MALE, fd.temp), calculateJeansOrShorts(suitcase.days, fd.temp, CASUAL),
                         calculateSneakers(suitcase.days), calculateUnderwear(suitcase.days), calculateSocks(suitcase.days),
-                        calculateBelts(suitcase.days, MALE, CASUAL), calculateUmbrella(fd.rain), calculatePajamas(suitcase.days)
+                        calculateBelts(suitcase.days, MALE, CASUAL), calculateUmbrella(fd.rain), calculatePajamas(suitcase.days), calculateTshirts(suitcase.days, CASUAL)
                     )
                     items.removeIf { it.amount == 0 }
                     items.sortBy { it.group }
@@ -60,11 +60,11 @@ class Calculations: CalculationInterface {
                 if (td.travelOccasion == "Custom"){ return SuitcaseWithItems(suitcase, listOf()) }
                 if (td.travelOccasion == "Business" || td.travelOccasion == "Business Casual"){
                     val items = mutableListOf(
-                        calculateBras(suitcase.days), calculateTights(suitcase.days, fd.temp), calculateJeansOrShorts(suitcase.days, fd.temp), calculateDressShirts(suitcase.days, FEMALE),
+                        calculateBras(suitcase.days), calculateTights(suitcase.days, fd.temp), calculateJeansOrShorts(suitcase.days, fd.temp, BUSINESS), calculateDressShirts(suitcase.days, FEMALE),
                         calculateDressShoes(suitcase.days, FEMALE), calculateUnderwear(suitcase.days),
-                        calculateSocks(suitcase.days), calculateTshirts(suitcase.days),
+                        calculateSocks(suitcase.days), calculateTshirts(suitcase.days, BUSINESS),
                         calculateJewelry(FEMALE), calculateUmbrella(fd.rain), calculatePajamas(suitcase.days),
-                        calculateCasualShoe(suitcase.days, fd.temp, FEMALE), calculateSkirts(suitcase.days), calculateDress(suitcase.days)
+                        calculateCasualShoe(suitcase.days, fd.temp, FEMALE), calculateDress(suitcase.days)
                     )
                     when(td.travelOccasion){
                         "Business" -> {
@@ -74,12 +74,14 @@ class Calculations: CalculationInterface {
                             items.add(calculateBelts(suitcase.days, FEMALE, BUSINESS))
                             items.add(calculateSlacks(suitcase.days, FEMALE, BUSINESS))
                             items.add(calculateJackets(fd.temp, BUSINESS))
+                            items.add(calculateSkirts(suitcase.days, BUSINESS))
                         }
                         "Business Casual" -> {
                             items.add(calculateBlazers(suitcase.days, FEMALE, BUSINESS_CASUAL))
                             items.add(calculateBelts(suitcase.days, FEMALE, BUSINESS_CASUAL))
                             items.add(calculateSlacks(suitcase.days, FEMALE, BUSINESS_CASUAL))
                             items.add(calculateJackets(fd.temp, BUSINESS_CASUAL))
+                            items.add(calculateSkirts(suitcase.days, BUSINESS_CASUAL))
                         }
                     }
                     items.removeIf { it.amount == 0 }
@@ -88,8 +90,8 @@ class Calculations: CalculationInterface {
                 }
                 if (td.travelOccasion == "Casual"){
                     val items = mutableListOf(
-                        calculateJackets(fd.temp, CASUAL), calculateHoodie(suitcase.days, FEMALE, fd.temp), calculateJeansOrShorts(suitcase.days, fd.temp),
-                        calculateSneakers(suitcase.days), calculateUnderwear(suitcase.days), calculateSocks(suitcase.days), calculateTshirts(suitcase.days),
+                        calculateJackets(fd.temp, CASUAL), calculateHoodie(suitcase.days, FEMALE, fd.temp), calculateJeansOrShorts(suitcase.days, fd.temp, CASUAL),
+                        calculateSneakers(suitcase.days), calculateUnderwear(suitcase.days), calculateSocks(suitcase.days), calculateTshirts(suitcase.days, CASUAL),
                         calculateBelts(suitcase.days, FEMALE, CASUAL), calculateUmbrella(fd.rain), calculatePajamas(suitcase.days), calculateBras(suitcase.days)
                     )
                     items.removeIf { it.amount == 0 }
@@ -110,7 +112,7 @@ class Calculations: CalculationInterface {
     private fun createSuitcase(td: TripData, fd: ForecastData): Suitcase{
         return Suitcase(
             0,
-            "Trip to ${td.location.featureName}!",
+            "${td.location.featureName} trip",
             "I hope weather will favor us.",
             td.location.featureName,
             td.location.latitude,
@@ -220,9 +222,9 @@ class Calculations: CalculationInterface {
 
     private fun calculateChinos(days: Int): SuitcaseItem{
         return if(days <= 3){
-            SuitcaseItem(0,0, "Sports Jacket", "Tops", 1)
+            SuitcaseItem(0,0, "Chinos", "Bottoms", 1)
         }else{
-            SuitcaseItem(0,0, "Sports Jacket", "Tops", 2)
+            SuitcaseItem(0,0, "Chinos", "Bottoms", 2)
         }
     }
 
@@ -252,17 +254,15 @@ class Calculations: CalculationInterface {
                 }
             }else{
                 if(occasion == "Business"){
+                    if(days <= 7){
+                        SuitcaseItem(0,0, "Slacks", "Bottoms", 0)
+                    }else{
+                        SuitcaseItem(0,0, "Slacks", "Bottoms", 1)
+                    }
+                }else{
                     if(days <= 1){
                         SuitcaseItem(0,0, "Slacks", "Bottoms", 0)
                     }else if(days <= 3){
-                        SuitcaseItem(0,0, "Slacks", "Bottoms", 0)
-                    }else if (days in 4..7){
-                        SuitcaseItem(0,0, "Slacks", "Bottoms", 1)
-                    }else{
-                        SuitcaseItem(0,0, "Slacks", "Bottoms", 2)
-                    }
-                }else{
-                    if(days <= 3){
                         SuitcaseItem(0,0, "Slacks", "Bottoms", 1)
                     }else if (days in 4..7){
                         SuitcaseItem(0,0, "Slacks", "Bottoms", 1)
@@ -275,22 +275,38 @@ class Calculations: CalculationInterface {
 
     }
 
-    private fun calculateJeansOrShorts(days: Int, temp: Int): SuitcaseItem {
-        return if (temp >= 20) {
-            if (days <= 3) {
-                SuitcaseItem(0, 0, "Shorts", "Bottoms", 0)
-            } else if (days in 4..7) {
-                SuitcaseItem(0, 0, "Shorts", "Bottoms", 1)
-            } else {
-                SuitcaseItem(0, 0, "Shorts", "Bottoms", 2)
+    private fun calculateJeansOrShorts(days: Int, temp: Int, occasion: String): SuitcaseItem {
+        return if (occasion == "Casual"){
+            if (temp >= 20) {
+                if (days <= 4) {
+                    SuitcaseItem(0, 0, "Shorts", "Bottoms", days)
+                } else {
+                    SuitcaseItem(0, 0, "Shorts", "Bottoms", 5)
+                }
+            }else{
+                if (days <= 4) {
+                    SuitcaseItem(0, 0, "Jeans", "Bottoms", days)
+                }else {
+                    SuitcaseItem(0, 0, "Jeans", "Bottoms", 5)
+                }
             }
         }else{
-            if (days <= 3) {
-                SuitcaseItem(0, 0, "Jeans", "Bottoms", 0)
-            } else if (days in 4..7) {
-                SuitcaseItem(0, 0, "Jeans", "Bottoms", 1)
-            } else {
-                SuitcaseItem(0, 0, "Jeans", "Bottoms", 2)
+            if (temp >= 20) {
+                if (days <= 3) {
+                    SuitcaseItem(0, 0, "Shorts", "Bottoms", 0)
+                } else if (days in 4..7) {
+                    SuitcaseItem(0, 0, "Shorts", "Bottoms", 1)
+                } else {
+                    SuitcaseItem(0, 0, "Shorts", "Bottoms", 2)
+                }
+            }else{
+                if (days <= 3) {
+                    SuitcaseItem(0, 0, "Jeans", "Bottoms", 0)
+                } else if (days in 4..7) {
+                    SuitcaseItem(0, 0, "Jeans", "Bottoms", 1)
+                } else {
+                    SuitcaseItem(0, 0, "Jeans", "Bottoms", 2)
+                }
             }
         }
     }
@@ -369,9 +385,9 @@ class Calculations: CalculationInterface {
         return if(days <= 3){
             SuitcaseItem(0,0, "Belt", "Accessories", 1)
         }else if (days in 4..7){
-            SuitcaseItem(0,0, "Belt", "Accessories", 2)
+            SuitcaseItem(0,0, "Belt", "Accessories", 1)
         }else{
-            SuitcaseItem(0,0, "Belt", "Accessories", 3)
+            SuitcaseItem(0,0, "Belt", "Accessories", 2)
         }
     }
 
@@ -405,15 +421,16 @@ class Calculations: CalculationInterface {
         }
     }
 
-    private fun calculateTshirts(days: Int): SuitcaseItem{
+    private fun calculateTshirts(days: Int, occasion: String): SuitcaseItem{
+        if (occasion == "Casual"){ return SuitcaseItem(0,0, "T-Shirt", "Tops", days) }
         return if(days <= 1){
-            SuitcaseItem(0,0, "T-Shirt", "Tops", 1)
+            SuitcaseItem(0,0, "T-Shirt", "Tops", 0)
         }else if(days <= 3){
-            SuitcaseItem(0,0, "T-Shirt", "Tops", 2)
+            SuitcaseItem(0,0, "T-Shirt", "Tops", 1)
         }else if (days in 4..7){
-            SuitcaseItem(0,0, "T-Shirt", "Tops", 3)
+            SuitcaseItem(0,0, "T-Shirt", "Tops", 2)
         }else{
-            SuitcaseItem(0,0, "T-Shirt", "Tops", 4)
+            SuitcaseItem(0,0, "T-Shirt", "Tops", 3)
         }
     }
 
@@ -452,7 +469,7 @@ class Calculations: CalculationInterface {
     private fun calculatePajamas(days: Int): SuitcaseItem{
         return if(days <= 1){
             SuitcaseItem(0,0, "Pajamas", "Other", 0)
-        }else if(days <= 3){
+        }else if(days <= 7){
             SuitcaseItem(0,0, "Pajamas", "Other", 1)
         }else{
             SuitcaseItem(0,0, "Pajamas", "Other", 2)
@@ -461,41 +478,51 @@ class Calculations: CalculationInterface {
 
     private fun calculateCasualShoe(days: Int, temp: Int, gender: String): SuitcaseItem{
         return if (gender == "Male"){
-            if(days <= 1){
-                SuitcaseItem(0,0, "Casual Shoe", "Shoes", 0)
-            }else if(days <= 3){
-                SuitcaseItem(0,0, "Casual Shoe", "Shoes", 1)
+            if(temp <= 8){
+                if(days <= 1){
+                    SuitcaseItem(0,0, "Boots", "Footwear", 0)
+                }else if(days <= 7){
+                    SuitcaseItem(0,0, "Boots", "Footwear", 1)
+                }else{
+                    SuitcaseItem(0,0, "Boots", "Footwear", 2)
+                }
             }else{
-                SuitcaseItem(0,0, "Casual Shoe", "Shoes", 2)
+                if(days <= 1){
+                    SuitcaseItem(0,0, "Casual Shoes", "Footwear", 0)
+                }else if(days <= 7){
+                    SuitcaseItem(0,0, "Casual Shoes", "Footwear", 1)
+                }else{
+                    SuitcaseItem(0,0, "Casual Shoes", "Footwear", 2)
+                }
             }
         }else{
             if(temp <= 8){
                 if(days <= 1){
-                    SuitcaseItem(0,0, "Boots", "Shoes", 0)
-                }else if(days <= 3){
-                    SuitcaseItem(0,0, "Boots", "Shoes", 1)
+                    SuitcaseItem(0,0, "Boots", "Footwear", 0)
+                }else if(days <= 7){
+                    SuitcaseItem(0,0, "Boots", "Footwear", 1)
                 }else{
-                    SuitcaseItem(0,0, "Boots", "Shoes", 2)
+                    SuitcaseItem(0,0, "Boots", "Footwear", 2)
                 }
             }else{
                 if(days <= 1){
-                    SuitcaseItem(0,0, "Flats", "Shoes", 0)
-                }else if(days <= 3){
-                    SuitcaseItem(0,0, "Flats", "Shoes", 1)
+                    SuitcaseItem(0,0, "Flats", "Footwear", 0)
+                }else if(days <= 7){
+                    SuitcaseItem(0,0, "Flats", "Footwear", 1)
                 }else{
-                    SuitcaseItem(0,0, "Flats", "Shoes", 2)
+                    SuitcaseItem(0,0, "Flats", "Footwear", 2)
                 }
             }
         }
     }
 
     private fun calculateSneakers(days: Int): SuitcaseItem{
-        return if(days <= 1){
-            SuitcaseItem(0,0, "Casual Shoe", "Shoes", 1)
-        }else if(days <= 3){
-            SuitcaseItem(0,0, "Casual Shoe", "Shoes", 1)
+        return if(days <= 3){
+            SuitcaseItem(0,0, "Casual Shoes", "Footwear", 1)
+        }else if(days <= 7){
+            SuitcaseItem(0,0, "Casual Shoes", "Footwear", 2)
         }else{
-            SuitcaseItem(0,0, "Casual Shoe", "Shoes", 2)
+            SuitcaseItem(0,0, "Casual Shoes", "Footwear", 3)
         }
     }
 
@@ -506,8 +533,10 @@ class Calculations: CalculationInterface {
                 SuitcaseItem(0,0, "Hoodie", "Tops", 1)
             }else if(days <= 3){
                 SuitcaseItem(0,0, "Hoodie", "Tops", 2)
-            }else{
+            }else if(days <= 7){
                 SuitcaseItem(0,0, "Hoodie", "Tops", 3)
+            }else{
+                SuitcaseItem(0,0, "Hoodie", "Tops", 5)
             }
         }else{
             if (temp > 10){
@@ -515,30 +544,46 @@ class Calculations: CalculationInterface {
                     SuitcaseItem(0,0, "Hoodie", "Tops", 1)
                 }else if(days <= 3){
                     SuitcaseItem(0,0, "Hoodie", "Tops", 2)
-                }else{
+                }else if(days <= 7){
                     SuitcaseItem(0,0, "Hoodie", "Tops", 3)
+                }else{
+                    SuitcaseItem(0,0, "Hoodie", "Tops", 5)
                 }
             }else{
                 if(days <= 1){
                     SuitcaseItem(0,0, "Sweater", "Tops", 1)
                 }else if(days <= 3){
                     SuitcaseItem(0,0, "Sweater", "Tops", 2)
-                }else{
+                }else if(days <= 7){
                     SuitcaseItem(0,0, "Sweater", "Tops", 3)
+                }else{
+                    SuitcaseItem(0,0, "Sweater", "Tops", 5)
                 }
             }
         }
     }
 
-    private fun calculateSkirts(days: Int): SuitcaseItem{
-        return if(days <= 1){
-            SuitcaseItem(0,0, "Skirt", "Bottoms", 0)
-        }else if(days <= 1){
-            SuitcaseItem(0,0, "Skirt", "Bottoms", 1)
-        }else if (days in 4..7){
-            SuitcaseItem(0,0, "Skirt", "Bottoms", 2)
+    private fun calculateSkirts(days: Int, occasion: String): SuitcaseItem{
+        return if (occasion == "Business Casual"){
+            if(days <= 2){
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 1)
+            }else if(days <= 3){
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 2)
+            }else if (days in 4..7){
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 3)
+            }else{
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 4)
+            }
         }else{
-            SuitcaseItem(0,0, "Skirt", "Bottoms", 3)
+            if(days <= 1){
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 0)
+            }else if(days <= 3){
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 1)
+            }else if (days in 4..7){
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 2)
+            }else{
+                SuitcaseItem(0,0, "Skirt", "Bottoms", 3)
+            }
         }
     }
 

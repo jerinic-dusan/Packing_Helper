@@ -43,8 +43,8 @@ class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): Vie
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    Toast.makeText(context, "Fetching weather forecast.", Toast.LENGTH_SHORT).show()
                     calculations(it, context)
-                    Toast.makeText(context, "Fetched weather forecast.", Toast.LENGTH_SHORT).show()
                 },
                 {
                     Toast.makeText(context, "Please connect to internet to use weather forecast functionality.", Toast.LENGTH_LONG).show()
@@ -59,8 +59,8 @@ class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): Vie
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+//                    Toast.makeText(context, "Calculating suitcase items.", Toast.LENGTH_SHORT).show()
                     insert(it, context)
-                    Toast.makeText(context, "Calculated suitcase items.", Toast.LENGTH_SHORT).show()
                 },
                 {
                     Timber.e(it)
@@ -75,7 +75,7 @@ class SuitcaseViewModel(private val suitcaseRepository: SuitcaseRepository): Vie
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    Toast.makeText(context, "Created new suitcase.", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context, "Created new suitcase.", Toast.LENGTH_SHORT).show()
                 },
                 {
                     Timber.e(it)

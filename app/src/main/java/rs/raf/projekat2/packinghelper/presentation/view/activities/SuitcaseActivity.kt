@@ -142,7 +142,7 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
         suitcase_title.requestFocus()
         location_text.text = suitcaseWithItems.suitcase.location
         occasion_text.text = suitcaseWithItems.suitcase.occasion
-        duration_text.text = suitcaseWithItems.suitcase.days.toString() + "days"
+        duration_text.text = suitcaseWithItems.suitcase.days.toString() + " days"
         temperature_text.text = suitcaseWithItems.suitcase.temp
 
         suitcaseWithItems.suitcaseItems.forEach { groupSet.add(it.group) }
@@ -175,7 +175,7 @@ class SuitcaseActivity : AppCompatActivity(R.layout.activity_suitcase), OnMapRea
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_2_json))
         mMap.apply { addMarker(MarkerOptions().position(LatLng(suitcaseWithItems.suitcase.lat, suitcaseWithItems.suitcase.lng)).icon(BitmapDescriptorFactory.defaultMarker(224F))) }
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(suitcaseWithItems.suitcase.lat, suitcaseWithItems.suitcase.lng - 20), 0F))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(suitcaseWithItems.suitcase.lat, suitcaseWithItems.suitcase.lng - 15), 0F))
     }
 
 }

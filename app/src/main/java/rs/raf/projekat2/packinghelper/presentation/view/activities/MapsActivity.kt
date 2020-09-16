@@ -59,8 +59,6 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
     private var forecastCounter = 0
     private val midnight = Calendar.getInstance()
 
-    private lateinit var suitcaseHistory: TripData
-
 
     companion object{
         const val MESSAGE_KEY_SUITCASE = "suitcase"
@@ -213,14 +211,8 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
                 if(now.time > midnight.time){ forecastCounter = 0 }
 
                 if(forecastCounter < 500){
-                    if(this::suitcaseHistory.isInitialized){
-                        if(suitcaseHistory.location == ss.location && suitcaseHistory.startDate == ss.startDate && suitcaseHistory.endDate == ss.endDate && suitcaseHistory.gender == ss.gender && suitcaseHistory.travelOccasion == ss.travelOccasion){
-                            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-                            builder.setTitle("Exit warning!").setMessage("You already created a suitcase for this trip. Are you sure you want to create another one?")
-                                .setCancelable(false).setIcon(R.drawable.warning).setPositiveButton("Create"){_, _ -> createSuitcase(ss)}.setNegativeButton("Cancel"){dialog, _ -> dialog.cancel()}
-                            val dialog: AlertDialog? = builder.create()
-                            dialog!!.show()
-                        }
+                    if (ss.startDate > ss.endDate){
+                        Toast.makeText(this, "Start date can't be after end date. Please select a valid date.", Toast.LENGTH_LONG).show()
                     }else{
                         createSuitcase(ss)
                     }
@@ -259,7 +251,6 @@ class MapsActivity : AppCompatActivity(R.layout.activity_maps), OnMapReadyCallba
         //THIS IS NOT RECOMMENDED
         suitcaseViewModel.getForecast(ss, this)
         forecastCounter += 1
-        suitcaseHistory = ss
     }
 
     private fun searchLocation(location: String) {

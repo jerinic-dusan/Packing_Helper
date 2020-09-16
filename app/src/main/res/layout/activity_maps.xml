@@ -25,13 +25,14 @@
 
         <EditText
             android:id="@+id/place"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:hint="@string/packing_assistant"
             android:imeOptions="actionDone"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:textColor="@color/colorTextHigh"
             android:textColorHint="@color/colorTextHigh"
@@ -39,8 +40,7 @@
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:importantForAutofill="no" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/logo"
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/travel_type"
                 android:textColor="@color/colorTextHigh"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -123,57 +123,70 @@
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.49">
 
-            <TextView
-                android:id="@+id/date_text_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/start_date"
-                android:textColor="@color/colorTextHigh"
-                android:textSize="24sp"
-                android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/from_date"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/round_button"
-                android:drawableStart="@drawable/calendar"
-                android:drawableTint="@color/colorPrimary"
-                android:elevation="8dp"
-                android:onClick="fromDate"
-                android:text="@string/select_date_1"
-                android:textColor="@color/colorTextHigh"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/date_text_1"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.95" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/to_date"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/round_button"
-                android:drawableStart="@drawable/calendar"
-                android:drawableTint="@color/colorPrimary"
-                android:elevation="8dp"
-                android:onClick="toDate"
-                android:text="@string/select_date_2"
-                android:textColor="@color/colorTextHigh"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/from_date"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.95" />
+                    <TextView
+                        android:id="@+id/date_text_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/start_date"
+                        android:textColor="@color/colorTextHigh"
+                        android:textSize="22sp"
+                        android:textStyle="italic"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/from_date"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/round_button"
+                        android:drawableStart="@drawable/calendar"
+                        android:drawableTint="@color/colorPrimary"
+                        android:elevation="8dp"
+                        android:gravity="center"
+                        android:onClick="fromDate"
+                        android:text="@string/select_date_1"
+                        android:textColor="@color/colorTextHigh"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/date_text_1"
+                        app:layout_constraintWidth_default="percent"
+                        app:layout_constraintWidth_percent="0.95" />
+
+                    <Button
+                        android:id="@+id/to_date"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/round_button"
+                        android:drawableStart="@drawable/calendar"
+                        android:drawableTint="@color/colorPrimary"
+                        android:elevation="8dp"
+                        android:gravity="center"
+                        android:onClick="toDate"
+                        android:text="@string/select_date_2"
+                        android:textColor="@color/colorTextHigh"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/from_date"
+                        app:layout_constraintWidth_default="percent"
+                        app:layout_constraintWidth_percent="0.95" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </ScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -190,50 +203,68 @@
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.49">
 
-            <TextView
-                android:id="@+id/gender_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gender"
-                android:textColor="@color/colorTextHigh"
-                android:textSize="24sp"
-                android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <RadioGroup
-                android:id="@+id/gender"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                app:layout_constraintTop_toBottomOf="@id/gender_text">
+                android:layout_height="match_parent">
 
-                <RadioButton
-                    android:id="@+id/radio_button_1"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="7dp"
-                    android:background="@drawable/round_button"
-                    android:buttonTint="@color/colorPrimary"
-                    android:drawableEnd="@drawable/people"
-                    android:drawableTint="@color/colorTextHigh"
-                    android:elevation="8dp"
-                    android:text="@string/male"
-                    android:textColor="@color/colorTextHigh" />
+                    android:layout_height="wrap_content">
 
-                <RadioButton
-                    android:id="@+id/radio_button_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/round_button"
-                    android:buttonTint="@color/colorPrimary"
-                    android:drawableEnd="@drawable/people"
-                    android:drawableTint="@color/colorTextHigh"
-                    android:elevation="8dp"
-                    android:text="@string/female"
-                    android:textColor="@color/colorTextHigh" />
-            </RadioGroup>
+                    <TextView
+                        android:id="@+id/gender_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gender"
+                        android:textColor="@color/colorTextHigh"
+                        android:textSize="22sp"
+                        android:textStyle="italic"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <RadioGroup
+                        android:id="@+id/gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintHeight_default="percent"
+                        app:layout_constraintHeight_percent="0.75"
+                        android:layout_margin="5dp"
+                        app:layout_constraintTop_toBottomOf="@id/gender_text">
+
+                        <RadioButton
+                            android:id="@+id/radio_button_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginBottom="7dp"
+                            android:background="@drawable/round_button"
+                            android:buttonTint="@color/colorPrimary"
+                            android:drawableEnd="@drawable/people"
+                            android:drawableTint="@color/colorTextHigh"
+                            android:elevation="8dp"
+                            android:gravity="start|center"
+                            android:text="@string/male"
+                            android:textColor="@color/colorTextHigh" />
+
+                        <RadioButton
+                            android:id="@+id/radio_button_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:background="@drawable/round_button"
+                            android:buttonTint="@color/colorPrimary"
+                            android:drawableEnd="@drawable/people"
+                            android:drawableTint="@color/colorTextHigh"
+                            android:elevation="8dp"
+                            android:gravity="start|center"
+                            android:text="@string/female"
+                            android:textColor="@color/colorTextHigh" />
+                    </RadioGroup>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </ScrollView>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
